@@ -2,6 +2,5 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// SPA: qualquer URL fora de /api é entregue ao Vue, que decide a tela pelo vue-router
+Route::view('/{any?}', 'app')->where('any', '^(?!api/|up$).*');
