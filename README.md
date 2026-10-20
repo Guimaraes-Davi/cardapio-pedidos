@@ -4,7 +4,7 @@ Sistema de cardápio e pedidos de delivery para um restaurante: o cliente monta 
 
 ## Demonstração online
 
-**Link:** <!-- cole aqui a URL do Render, ex.: https://cardapio-pedidos.onrender.com -->
+**Link:** https://cardapio-pedidos.onrender.com
 
 Publicado no plano gratuito do Render com Docker. O que esperar:
 
