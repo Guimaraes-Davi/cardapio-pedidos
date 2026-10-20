@@ -2,6 +2,23 @@
 
 Sistema de cardápio e pedidos de delivery para um restaurante: o cliente monta o carrinho e finaliza o pedido, a operação acompanha a fila e avança o status de cada pedido, e o dono vê o faturamento do dia, do mês e os produtos mais vendidos.
 
+## Demonstração online
+
+**Link:** <!-- cole aqui a URL do Render, ex.: https://cardapio-pedidos.onrender.com -->
+
+Publicado no plano gratuito do Render com Docker. O que esperar:
+
+- **Demora para abrir na primeira vez:** o plano gratuito dorme depois de 15 minutos sem acesso, e o primeiro acesso depois disso leva cerca de 1 minuto para acordar.
+- **Os dados voltam ao exemplo:** o banco é SQLite dentro do container. A cada reinício, o [`docker/start.sh`](docker/start.sh) roda `migrate:fresh --seed`, então pedidos criados na demonstração somem e o banco volta aos dados de exemplo.
+- **Servidor simples:** `php artisan serve` atende uma requisição por vez, o que basta para uma demonstração. Em produção de verdade seria PHP-FPM com Nginx (ou FrankenPHP), e MySQL ou PostgreSQL num serviço gerenciado.
+- **Dependências de desenvolvimento na imagem:** o `composer install` do [`Dockerfile`](Dockerfile) instala também as dependências de dev, porque os seeders usam o Faker para gerar clientes e pedidos. É uma troca consciente para a demo: em produção seria `--no-dev`, e os dados viriam de outra fonte.
+
+Como a imagem é montada:
+
+- **Estágio `front` (`node:22`):** `npm ci` e `npm run build` geram o `public/build` com o Vue e o Tailwind compilados.
+- **Estágio final (`php:8.3-cli` com o Composer de `composer:2`):** instala as dependências PHP e copia só o `public/build` do primeiro estágio. Node e `node_modules` ficam fora da imagem final.
+- **`bootstrap/app.php`:** `trustProxies(at: '*')` faz o Laravel aceitar os cabeçalhos `X-Forwarded-*` do proxy do Render, que recebe o HTTPS e repassa HTTP ao container. Sem isso, os assets sairiam com `http://` numa página `https://`, e o navegador os bloquearia (mixed content).
+
 ## Stack
 
 - **Backend:** PHP 8.3, Laravel 13, API REST com Form Requests, API Resources e Eloquent

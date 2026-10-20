@@ -13,7 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // o Render termina o HTTPS no proxy e repassa HTTP; confiar nos cabeçalhos
+        // X-Forwarded-* faz o Laravel gerar URLs https:// para os assets do Vite
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
